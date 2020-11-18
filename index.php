@@ -15,6 +15,8 @@ $view = new View();
 
 $viewParams = [];
 if ($action === 'create') {
+
+  dump($action);
   $page = 'create';
   $viewParams['resultCrate'] = "udało się";
 } else {
