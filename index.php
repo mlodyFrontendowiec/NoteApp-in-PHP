@@ -14,14 +14,37 @@ $action = $_GET['action'] ?? DEFAULT_ACTION;
 $view = new View();
 
 $viewParams = [];
-if ($action === 'create') {
 
-  dump($action);
-  $page = 'create';
-  $viewParams['resultCrate'] = "udało się";
-} else {
-  $page = 'list';
-  $viewParams['resultList'] = "wyświetlamy notatki";
+switch($action){
+  case "create":
+    $page = 'create';
+  $created = false;
+
+  if (!empty($_POST) ) {
+    $created = true;
+    $viewParams = [
+    "title"=>$_POST['title'],
+    "description"=> $_POST['description']
+  ];
+  }
+  
+
+  $viewParams['created'] = $created;
+    break;
+  case "show":
+    $page = "show";
+    $viewParams = [
+    "title"=>"Moja notatka",
+    "description"=> 'Opis'
+  ];
+    break;
+  default:
+    $page = 'list';
+    $viewParams['resultList'] = "wyświetlamy notatki";
+    break;
+  
+
 }
+
 
 $view->render($page, $viewParams);

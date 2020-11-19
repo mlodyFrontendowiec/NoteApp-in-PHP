@@ -83,10 +83,10 @@ form input[type=url]:focus,
 form input[type=email]:focus,
 form textarea:focus,
 form select:focus {
-  -moz-box-shadow: 0 0 8px #88D5E9;
-  -webkit-box-shadow: 0 0 8px #88D5E9;
-  box-shadow: 0 0 8px #88D5E9;
-  border: 1px solid #88D5E9;
+  -moz-box-shadow: 0 0 8px #1E58FF;
+  -webkit-box-shadow: 0 0 8px #1E58FF;
+  box-shadow: 0 0 8px #1E58FF;
+  border: 1px solid #1E58FF;
 }
 
 form .field-long {
@@ -99,7 +99,7 @@ form .field-textarea {
 
 form input[type=submit],
 form input[type=button] {
-  background: cadetblue;
+  background: #1E58FF;
 
   border: none;
   color: #fff;
@@ -110,7 +110,7 @@ form input[type=button] {
 
 form input[type=submit]:hover,
 form input[type=button]:hover {
-  background: #4691A4;
+  background: #1E58FF;
   box-shadow: none;
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
@@ -143,12 +143,12 @@ form>div:first-child>label:first-child>input {
 }
 
 form>div:first-child>label:first-child>input:focus {
-  box-shadow: 0 0 0px 2px cadetblue;
+  box-shadow: 0 0 0px 2px #1E58FF;
 }
 
 .header {
   text-align: center;
-  background-color: cadetblue;
+  background-color: #1E58FF;
   margin-bottom: 20px;
   padding: 20px 0;
 }
@@ -171,7 +171,7 @@ form>div:first-child>label:first-child>input:focus {
 
 .menu ul a {
   display: block;
-  color: cadetblue;
+  color: #1E58FF;
   font-size: 18px;
   text-transform: uppercase;
   padding: 16px 0;
@@ -189,13 +189,13 @@ form>div:first-child>label:first-child>input:focus {
 
 .footer {
   margin-top: 20px;
-  background-color: cadetblue;
+  background-color: #1E58FF;
   padding-bottom: 30px;
 }
 
 .footer p {
   text-align: center;
-  color: #ddd;
+  color: white;
 }
 
 
@@ -210,14 +210,14 @@ table {
 
 .tbl-header {
   margin-top: 20px;
-  background-color: cadetblue;
+  background-color: #1E58FF;
   color: white;
 }
 
 .tbl-content {
   overflow-x: auto;
   margin-top: 0px;
-  border: 3px solid cadetblue;
+  border: 3px solid #1E58FF;
   color: #222;
   background-color: white;
 }
@@ -309,14 +309,14 @@ tr>td:nth-child(3) {
 
 button {
   border: none;
-  background-color: cadetblue;
+  background-color: #1E58FF;
   padding: 5px 10px;
   color: white;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #4691A4;
+  background-color: #1E58FF;
 }
 
 form.note-form li label {
