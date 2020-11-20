@@ -7,16 +7,16 @@ namespace App;
 require_once("src/Utils/debug.php");
 require_once("src/Controller.php");
 
-const DEFAULT_ACTION = 'list';
-
-$action = $_GET['action'] ?? DEFAULT_ACTION;
-
-
-$controller = new Controller();
-$controller->run($action);
+$request = [
+  'get'=>$_GET,
+  'post'=>$_POST
+];
 
 
+// $controller = new Controller($request);
+// $controller->run(); to jest to samo co poniżej 
 
+(new Controller($request))->run();
 
 
 
