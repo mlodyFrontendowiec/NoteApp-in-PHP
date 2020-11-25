@@ -2,7 +2,12 @@
 declare(strict_types=1);
 
 namespace App;
-require_once("src/Databese.php");
+
+require_once("src/Exception/ConfigurationException.php");
+
+use App\Exception\ConfigurationException;
+
+require_once("src/Database.php");
 require_once("src/View.php");
 
 //F3EDnz0Dm8oCnDQa - hasło do bazy danych
@@ -10,8 +15,10 @@ class Controller{
 
     private static array $configuration = []; 
 
+    private Database $database;
     private array $request;
     private View $view;
+
 
     public static function initConfiguration(array $configuration):void{
 
@@ -21,13 +28,17 @@ class Controller{
     const DEFAULT_ACTION = 'list';
 
     public function __construct(array $request)
-    {    
-        $db = new Database(self::$configuration['db']);
+    {    if(empty(self::$configuration['db'])){
+      throw new ConfigurationException("Configuration Error");
+
+    }
+        $this->database = new Database(self::$configuration['db']);
         
         $this->request = $request;
         $this->view = new View();
 
     }
+
 
 
     public function run():void{  
@@ -37,20 +48,23 @@ class Controller{
         switch($this->action()){
             case "create":
             $page = "create";
-            $created = false;
+          
+            
 
             $data = $this->getRequestPost(); // zwraca nam zawartość formularza, $data to jest inna zmienna niż ta w this->action()
           
             if (!empty($data) ) { // jeżeli są dane w tablicy superglobalnej post 
-              $created = true;
-              $viewParams = [
-              "title"=>$data['title'], // ustalamy co się kryje w tablicy asocjacyjne superglobalnej na title
-              "description"=> $data['description'] // ustalamy co się kryje w tablicy asocjacyjne superglobalnej na description
-            ];
+
+              $noteData = [
+                'title'=>$data['title'],
+                'description'=>$data['description'],                
+              ];
+
+              $this->database->createNote($noteData);
+
+              header("Location: /?before=created");
             }
             
-          
-            $viewParams['created'] = $created; // ustawiamy, że notatka została utworzona
               break;
             case "show":
               $page = "show";
@@ -61,7 +75,10 @@ class Controller{
               break;
             default: // domyślnie ta strona się wyświetli
               $page = 'list';
-              $viewParams['resultList'] = "wyświetlamy notatki";
+
+              $data = $this->getRequestGet();
+              dump($data);
+              $viewParams['before'] = $data['before']?? null;
               break;
             
           
