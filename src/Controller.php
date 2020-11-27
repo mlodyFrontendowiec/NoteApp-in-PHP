@@ -6,6 +6,7 @@ namespace App;
 require_once("src/Exception/ConfigurationException.php");
 
 use App\Exception\ConfigurationException;
+use App\Exception\NotFoundException;
 
 require_once("src/Database.php");
 require_once("src/View.php");
@@ -15,8 +16,9 @@ class Controller{
 
     private static array $configuration = []; 
 
-    private Database $database;
     private array $request;
+
+    private Database $database;
     private View $view;
 
 
@@ -42,15 +44,13 @@ class Controller{
 
 
     public function run():void{  
-
-        $viewParams = [];
+      $viewParams =[];
+       
         
         switch($this->action()){
             case "create":
-            $page = "create";
-          
+            $page = "create";          
             
-
             $data = $this->getRequestPost(); // zwraca nam zawartość formularza, $data to jest inna zmienna niż ta w this->action()
           
             if (!empty($data) ) { // jeżeli są dane w tablicy superglobalnej post 
@@ -63,22 +63,46 @@ class Controller{
               $this->database->createNote($noteData);
 
               header("Location: /?before=created");
+              exit;
             }
             
               break;
             case "show":
               $page = "show";
+
+
+              $data = $this->getRequestGet();
+              $noteId = (int) ($data['id'] ?? null);
+
+              if(!$noteId){
+                header("Location: /?error=missingNoteId");
+                exit;
+              }
+
+              try{
+                $note = $this->database->getNote($noteId);
+              }catch(NotFoundException $e){                
+                header("Location: /?error=noteNotFound");
+                exit;
+              }
+
               $viewParams = [
-              "title"=>"Moja notatka",
-              "description"=> 'Opis'
-            ];
+              "note"=>$note,
+              ];
               break;
             default: // domyślnie ta strona się wyświetli
               $page = 'list';
 
               $data = $this->getRequestGet();
-              dump($data);
-              $viewParams['before'] = $data['before']?? null;
+
+
+              $viewParams = [
+                'notes'=> $this->database->getNotes(),
+                'before'=> $data['before'] ?? null,
+                'error'=> $data['error'] ?? null,
+              ];
+
+              
               break;
             
           

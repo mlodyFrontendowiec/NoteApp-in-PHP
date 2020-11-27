@@ -6,9 +6,8 @@ namespace App\Exception;
 
 require_once("AppException.php");
 
-class StorageException extends AppException
-{
+use App\Exception\AppException;
 
-
+class NotFoundException extends AppException{
 
 }
