@@ -5,6 +5,7 @@ namespace App;
 
 require_once("src/Exception/ConfigurationException.php");
 
+use App\Request;
 use App\Exception\ConfigurationException;
 use App\Exception\NotFoundException;
 
@@ -16,7 +17,7 @@ class Controller{
 
     private static array $configuration = []; 
 
-    private array $request;
+    private Request $request;
 
     private Database $database;
     private View $view;
@@ -29,7 +30,7 @@ class Controller{
     
     const DEFAULT_ACTION = 'list';
 
-    public function __construct(array $request)
+    public function __construct(Request $request)
     {    if(empty(self::$configuration['db'])){
       throw new ConfigurationException("Configuration Error");
 
@@ -44,20 +45,17 @@ class Controller{
 
 
     public function run():void{  
-      $viewParams =[];
-       
+      $viewParams =[];       
         
         switch($this->action()){
             case "create":
-            $page = "create";          
-            
-            $data = $this->getRequestPost(); // zwraca nam zawartość formularza, $data to jest inna zmienna niż ta w this->action()
-          
-            if (!empty($data) ) { // jeżeli są dane w tablicy superglobalnej post 
+              $page = "create";          
+                      
+              if ($this->request->hasPost()) { // jeżeli są dane w tablicy superglobalnej post 
 
               $noteData = [
-                'title'=>$data['title'],
-                'description'=>$data['description'],                
+                'title'=>$this->request->postParam('title'),
+                'description'=>$this->request->postParam('description'),                
               ];
 
               $this->database->createNote($noteData);
@@ -71,8 +69,9 @@ class Controller{
               $page = "show";
 
 
-              $data = $this->getRequestGet();
-              $noteId = (int) ($data['id'] ?? null);
+              $noteId =(int) $this->request->getParam('id'); // rzutowanie na inta
+
+              dump($noteId);
 
               if(!$noteId){
                 header("Location: /?error=missingNoteId");
@@ -93,13 +92,11 @@ class Controller{
             default: // domyślnie ta strona się wyświetli
               $page = 'list';
 
-              $data = $this->getRequestGet();
-
-
+             
               $viewParams = [
                 'notes'=> $this->database->getNotes(),
-                'before'=> $data['before'] ?? null,
-                'error'=> $data['error'] ?? null,
+                'before'=>$this->request->getParam('before') ?? null,
+                'error'=>$this->request->getParam('error')?? null,
               ];
 
               
@@ -114,23 +111,10 @@ class Controller{
     }
 
     private function action():string{
-        $data = $this->getRequestGet(); // zwraca nam tablicę superglobalną GET
-        return $data['action'] ?? self::DEFAULT_ACTION; // określa nam co kryje się pod action
-
-        
+        return $this->request->getParam('action',self::DEFAULT_ACTION); // zwraca nam to co kryje sie pod kluczem action w tablicy $get, albo domyślną akcję 
+          
     }
-    private function getRequestGet():array{
-
-
-        return $this->request['get'] ?? []; 
-    }
-
-    private function getRequestPost():array{
-
-
-        return $this->request['post'] ?? []; // zwraca na zawartość tablicy superglobalnej POST
-    }
-
+    
     
 }
 

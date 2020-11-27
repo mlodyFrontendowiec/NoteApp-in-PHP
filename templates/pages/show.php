@@ -6,7 +6,11 @@
         <li>Tytuł:<?php echo htmlentities($note['title'])?></li>
         <li><?php echo htmlentities($note['description'])?></li>
         <li>Zapisno: <?php echo htmlentities($note['created'])?></li>
-    </ul>
+    </ul>       
+    <?php else:?>
+        <div>
+        Brak notatki do wyświetlenia
+        </div>
     <?php endif;?>
     <a href="/">
     <button>Powrót do listy notatek</button>
