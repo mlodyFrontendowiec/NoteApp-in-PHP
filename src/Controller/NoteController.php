@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\NotFoundException;
+
 
 class NoteController extends AbstractController{
 
@@ -67,6 +69,22 @@ class NoteController extends AbstractController{
           'error'=>$this->request->getParam('error')?? null,
         ]
     ); 
+    }
+
+    public function editAction(){
+      $noteId = (int)($this->request->getParam('id'));
+      if(!$noteId){
+        $this->redirect('/',['error'=>"missingNoteID"]);
+      }
+      $this->view->render('edit');
+      
+    }
+
+    private function redirect(string $to,array $params){
+      $params = implode('&',$params);
+      $location = $to;
+      header("Location: $to?error=missingNoteId");
+      exit;
     }
 
 

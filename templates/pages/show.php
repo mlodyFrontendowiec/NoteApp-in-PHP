@@ -6,7 +6,10 @@
         <li>Tytuł:<?php echo $note['title']?></li>
         <li><?php echo $note['description']?></li>
         <li>Zapisno: <?php echo $note['created']?></li>
-    </ul>       
+    </ul>   
+    <a href="/?action=edit&id=<?php echo $note['id']?>"> 
+        <button>Edytuj </button>
+    </a>  
     <?php else:?>
         <div>
         Brak notatki do wyświetlenia
