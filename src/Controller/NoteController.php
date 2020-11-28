@@ -1,12 +1,10 @@
 <?php 
 declare(strict_types=1);
 
-namespace App;
-
-use App\Exception\NotFoundException;
 
 
-require_once("AbstractController.php");
+namespace App\Controller;
+
 
 class NoteController extends AbstractController{
 

@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App;
-use App\Exception\ConfigurationException;
 
-require_once("src/Exception/ConfigurationException.php");
-require_once("src/Database.php");
-require_once("src/View.php");
+
+namespace App\Controller;
+
+
+use App\Database;
+use App\Request;
+use App\View;
+use App\Exception\ConfigurationException;
 
 abstract class AbstractController{
 
@@ -43,7 +46,7 @@ abstract class AbstractController{
 
         $action = $this->action() . 'Action';
   
-        dump($action);
+       
         if(!method_exists($this,$action)){
           $action = self::DEFAULT_ACTION . 'Action';
   
