@@ -23,9 +23,7 @@ class Database {
         try{
 
             $this->validateConfig($config);
-            $this->createConnection($config);
-
-            
+            $this->createConnection($config);           
             
 
         }catch(PDOException $e){

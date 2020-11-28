@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 require_once("src/Utils/debug.php");
-require_once("src/Controller.php");
+require_once("src/NoteController.php");
 require_once("src/Request.php");
 require_once("src/Exception/AppException.php");
 
@@ -24,9 +24,9 @@ $configuration = require_once("config/config.php"); // tablica zwracana z tego p
 
 $request = new Request($_GET,$_POST);
 try{
-Controller::initConfiguration($configuration);
+AbstractController::initConfiguration($configuration);
 
-(new Controller($request))->run();
+(new NoteController($request))->run();
 
 }catch(ConfigurationException $e){
   dump($e);
