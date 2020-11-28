@@ -29,7 +29,7 @@ use App\Controller\NoteController;
 
 
 
-$request = new Request($_GET,$_POST);
+$request = new Request($_GET,$_POST,$_SERVER);
 
 try{
 AbstractController::initConfiguration($configuration);

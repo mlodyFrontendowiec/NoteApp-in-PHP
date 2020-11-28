@@ -55,6 +55,22 @@ abstract class AbstractController{
         $this->$action(); // wywołujemy metodą zależną od parametru action np. $action = 'create'
           
       }
+      protected function redirect(string $to,array $params){
+        $location = $to;
+  
+        if(count($params)){
+          $queryParams = [];
+          foreach($params as $key=>$value){
+          $queryParams[] = urlencode($key). '=' . urlencode($value);
+        }
+        $queryParams = implode('&', $queryParams);
+        $location .= '?' . $queryParams;
+        var_dump($location);
+  
+        }    
+        header("Location: $location");
+        exit;
+      }
   
       protected function action():string{
           return $this->request->getParam('action',self::DEFAULT_ACTION); // zwraca nam to co kryje sie pod kluczem action w tablicy $get, albo domyślną akcję 
