@@ -42,7 +42,7 @@ abstract class AbstractController{
         $this->view = new View();
 
     }
-    public function run():void{  
+    final public function run():void{  
 
         $action = $this->action() . 'Action';
   
@@ -55,7 +55,7 @@ abstract class AbstractController{
         $this->$action(); // wywołujemy metodą zależną od parametru action np. $action = 'create'
           
       }
-      protected function redirect(string $to,array $params){
+    final protected function redirect(string $to,array $params){
         $location = $to;
   
         if(count($params)){
