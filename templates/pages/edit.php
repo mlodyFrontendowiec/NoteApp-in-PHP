@@ -7,7 +7,7 @@
         <input name="id" type="hidden" value="<?php echo $note['id']?>"/>
         <ul>
           <li>
-            <label>Tytuł <span class="required">*</span></label>
+              <label>Tytuł <span class="required">*</span></label>
             <input type="text" name="title" class="field-long" value="<?php echo $note['title']?>" />
           </li>
           <li>

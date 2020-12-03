@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App;
 
-class Request{
-
+class Request
+{
     private array $get = [];
     private array $post = [];
     private array $server = [];
-    public function __construct(array $get, array $post,array $server)
+    public function __construct(array $get, array $post, array $server)
     {
         $this->get = $get;
         $this->post = $post;
@@ -32,11 +32,9 @@ class Request{
     public function getParam(string $name, $default = null)
     {
         return $this->get[$name] ?? $default;
-
     }
     public function postParam(string $name, $default = null)
     {
         return $this->post[$name] ?? $default;
     }
-
 }

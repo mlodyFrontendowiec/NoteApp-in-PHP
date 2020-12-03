@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App;
 
-
 use App\Exception\ConfigurationException;
 use App\Exception\StorageException;
 use App\Exception\NotFoundException;
@@ -11,52 +10,46 @@ use PDO;
 use PDOException;
 use Throwable;
 
-class Database {
-
+class Database
+{
     private PDO $conn;
 
     public function __construct(array $config)
     {
-
-        try{
-
+        try {
             $this->validateConfig($config);
-            $this->createConnection($config);           
-            
-
-        }catch(PDOException $e){
-            
+            $this->createConnection($config);
+        } catch (PDOException $e) {
             throw new StorageException("Connection error");
-            
         }
-        
     }
-    public function getNote(int $id):array{
-        try{
+    public function getNote(int $id):array
+    {
+        try {
             $query = "SELECT *FROM notes WHERE id = $id";
 
             $result = $this->conn->query($query);
-            $note = $result->fetch(PDO::FETCH_ASSOC);  
+            $note = $result->fetch(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            throw new StorageException("Nie udało się pobrać notatki", 400, $e);
         }
-        catch(Throwable $e){
-            throw new StorageException("Nie udało się pobrać notatki", 400,$e);
-        }
-        if(!$note){
+        if (!$note) {
             throw new NotFoundException("Notatka o id: $id nie istnieje");
             exit('nie ma takiej notatki');
         }
         return $note;
     }
 
-    public function getNotes(int $pageNumber,int $pageSize,string $sortBy, string $sortOrder):array{
-        try{
+    public function getNotes(int $pageNumber, int $pageSize, string $sortBy, string $sortOrder):array
+    {
+        try {
             $limit = $pageSize;
             $offset = ($pageNumber - 1)  * $pageSize ;
-            if(!in_array($sortBy,['created','title'])){
+            if (!in_array($sortBy, ['created','title'])) {
                 $sortBy = 'title';
             }
 
-            if(!in_array($sortOrder,['asc','desc'])){
+            if (!in_array($sortOrder, ['asc','desc'])) {
                 $sortOrder = 'desc';
             }
             
@@ -72,62 +65,46 @@ class Database {
             $notes = $result->fetchAll(PDO::FETCH_ASSOC);
     
             return $notes;
+        } catch (Throwable $e) {
+            throw new StorageException("Nie udało się pobrać danych o notatkach", 400, $e);
         }
-        catch(Throwable $e){
-            throw new StorageException("Nie udało się pobrać danych o notatkach",400,$e);
-
-
-        }
-
-        
-
     }
-    public function getCount():int{
-        try{
+    public function getCount():int
+    {
+        try {
             $query = "SELECT count(*) AS cn  FROM notes";
 
             $result = $this->conn->query($query);
             $result = $result->fetch(PDO::FETCH_ASSOC);
             
-            if($result === false){
-                throw new StorageException("Błąd przy próbie pobrania ilosći notatek",400);
+            if ($result === false) {
+                throw new StorageException("Błąd przy próbie pobrania ilosći notatek", 400);
             }
-            
-
-            
             return (int) $result['cn'];
-            
+        } catch (Throwable $e) {
+            throw new StorageException("Nie udało się pobrać informacji o liczbie notatek ", 400, $e);
         }
-        catch(Throwable $e){
-            throw new StorageException("Nie udało się pobrać informacji o liczbie notatek ",400,$e);
-
-
-        }
-
-        
-
     }
-    public function createNote(array $data):void{
-        try{
+    public function createNote(array $data):void
+    {
+        try {
             $title = $this->conn->quote($data['title']);
             $description =  $this->conn->quote($data['description']);
             $created = $this->conn->quote(date('Y-m-d H:i:s'));
 
-            $query = 
+            $query =
             "INSERT INTO notes(title,description,created) 
             VALUE($title,$description,$created)";
             
             $result = $this->conn->exec($query);
-
-        }catch(Throwable $e){
+        } catch (Throwable $e) {
             throw new StorageException("Nie udało się utworzyć nowej notatki");
             exit;
         }
-        
     }
     public function editNote(int $id, array $data):void
     {
-        try{
+        try {
             $title = $this->conn->quote($data['title']);
             $description = $this->conn->quote($data['description']);
 
@@ -137,52 +114,47 @@ class Database {
             WHERE id = $id";
 
             $this->conn->exec($query);
-
-        }catch( Throwable $e){
-            throw new StorageException('Nie udało się zaktualizować notatki', 400,$e);
+        } catch (Throwable $e) {
+            throw new StorageException('Nie udało się zaktualizować notatki', 400, $e);
         }
-
     }
 
-    public function deleteNote(int $id):void{
-        try{
-
+    public function deleteNote(int $id):void
+    {
+        try {
             $query = "DELETE FROM notes WHERE id=$id LIMIT 1";
             $this->conn->exec($query);
-
-        }catch(Throwable $e){
-            throw new StorageException('Nie udało się usunąć notatki',400,$e);    
+        } catch (Throwable $e) {
+            throw new StorageException('Nie udało się usunąć notatki', 400, $e);
         }
-
-
     }
 
     
 
 
-    private function createConnection(array $config):void{
+    private function createConnection(array $config):void
+    {
         $dsn = "mysql:dbname={$config['database']};host={$config['host']}";
 
-            $this->conn = new PDO(
-                $dsn,
-                $config['user'],
-                $config['password'],
+        $this->conn = new PDO(
+            $dsn,
+            $config['user'],
+            $config['password'],
             [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-            ]); // szuka klasy w zakresie globalnym
-        
+            ]
+        ); // szuka klasy w zakresie globalnym
     }
 
-    private function validateConfig(array $config):void{
-        if(
+    private function validateConfig(array $config):void
+    {
+        if (
             empty($config['database']) ||
             empty($config['host']) ||
             empty($config['user']) ||
             empty($config['password'])
-        ){
+        ) {
             throw new ConfigurationException("Storage configuration erroor");
         }
-
     }
-
 }
